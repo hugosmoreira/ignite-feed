@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './Post.module.css'
+import Comment from './Comment'
 
 const Post = () => {
   return (
@@ -25,8 +26,21 @@ const Post = () => {
         <form className={styles.commentForm}>
             <strong>Deixe seu Feedback</strong>
             <textarea placeholder='deixe um comentario'></textarea>
-            <button type='submit'>Comentario</button>
+            <footer>
+                    <button
+                        type="submit"
+                        disabled
+                    >
+                        Publicar
+                    </button>
+                </footer>
         </form>
+
+        <div className={styles.commentList}>
+            <Comment />
+            <Comment />
+            <Comment />
+        </div>
 
     </article>
   )
