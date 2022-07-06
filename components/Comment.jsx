@@ -4,6 +4,21 @@ import { ThumbsUp, Trash } from "phosphor-react";
 
 
 const Comment = () => {
+    
+    
+    function handleDeleteComment() {
+        console.log("Deletar")
+        onDeleteComment(content);
+      }
+    
+      function handleLikeComment() {
+        setLikeCount((state) => {
+          return state + 1;
+        });
+      }
+
+
+
   return (
     <div className={styles.comment}>
       <img src="https://github.com/hugosmoreira.png" />

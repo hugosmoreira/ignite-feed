@@ -11,6 +11,12 @@ import Avatar from './Avatar'
 
 const Post = ({id, author, avatarUrl, name, role, content, publishedAt}) => {
 
+    const [comments, setComments] = useState([
+        "Gostei, parabéns!"
+      ]);
+
+    const [newCommentText, setNewCommentText] = useState('');
+
 
     const publishedDateFormatted = format(publishedAt, "dd 'de' LLLL 'às' HH:mm'h'", {
         locale: ptBR
@@ -19,7 +25,35 @@ const Post = ({id, author, avatarUrl, name, role, content, publishedAt}) => {
     const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
         locale: ptBR,
         addSuffix: true
-      })
+    })
+
+ 
+
+  function handleCreateNewComment(event) {
+    event.preventDefault()
+
+    setComments([...comments, newCommentText]);
+    setNewCommentText('');
+  }
+
+  function handleNewCommentChange(event) {
+    event.target.setCustomValidity('');
+    setNewCommentText(event.target.value);
+  }
+
+  function deleteComment(commentToDelete) {
+    const commentsWithoutDeletedOne = comments.filter(comment => {
+      return comment !== commentToDelete;
+    });
+
+    setComments(commentsWithoutDeletedOne);
+  }
+
+  function handleNewCommentInvalid(event) {
+    event.target.setCustomValidity('Por favor, digite um comentário');
+  }
+
+  const isNewCommentEmpty = newCommentText.length === 0;
 
 
 
@@ -40,18 +74,22 @@ const Post = ({id, author, avatarUrl, name, role, content, publishedAt}) => {
         </header>
 
         <div className={styles.content}>
-                <p>Fala Pessoal</p>
-                <p>Acabei de subir mais um projeto no meu portifolio. Eh um projeto bacana legal e sucesse nao esqueca de checar</p>
-                <p><a href="">#WebDev #WebDevelop #React #JavaScript</a></p>
-        </div>
+        {content.map(item => {
+          if (item.type === 'paragraph') {
+            return <p key={item.content}>{item.content}</p>
+          } else if (item.type === "link"){
+            return <a key={item.content} href="#">{item.content}</a>
+          }
+        })}
+      </div>
 
-        <form className={styles.commentForm}>
+        <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
             <strong>Deixe seu Feedback</strong>
-            <textarea placeholder='deixe um comentario'></textarea>
+            <textarea onChange={handleNewCommentChange} placeholder='deixe um comentario' onInvalid={handleNewCommentInvalid} required></textarea>
             <footer>
                     <button
                         type="submit"
-                        disabled
+                        disabled={isNewCommentEmpty}
                     >
                         Publicar
                     </button>
@@ -59,9 +97,17 @@ const Post = ({id, author, avatarUrl, name, role, content, publishedAt}) => {
         </form>
 
         <div className={styles.commentList}>
-            <Comment />
-            <Comment />
-            <Comment />
+            
+                {comments.map(comment => {
+                    return (
+                      <Comment
+                        key={comment}
+                        content={comment}
+                        onDeleteComment={deleteComment}
+                      />
+                    )
+                  })}
+            
         </div>
 
     </article>
